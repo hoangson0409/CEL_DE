@@ -6,17 +6,10 @@ from pydantic import BaseModel, Field
 
 import yfinance as yf
 from datetime import datetime,timedelta
-
-
-
-
-
 class DateTickerBase(BaseModel):
     date: datetime
     ticker: str
     close: float
-
-
 
 class DateTickerCreate(DateTickerBase):
     pass
@@ -39,15 +32,16 @@ dateticker = sqlalchemy.Table(
 )
 
 
-def get_stock_data(ticker
-                   ,start_date = (datetime.now() +  timedelta(days=-20)).strftime('%Y-%m-%d')
-                  ,end_date = datetime.now().strftime('%Y-%m-%d')):
+def get_stock_data(ticker, time_past: int):
+    start_date = (datetime.now() + timedelta(days=-1 * time_past)).strftime('%Y-%m-%d')
+    end_date = datetime.now().strftime('%Y-%m-%d')
+
     stock = yf.Ticker(ticker)
-    data = stock.history(start=start_date, end=end_date)
-    data = data.reset_index()
+    data = stock.history(start=start_date, end=end_date).reset_index()
+
     data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')
     data['Ticker'] = ticker
-    data = data[['Date','Ticker','Close']]
-    data.columns = ['date','ticker','close']
+    data = data[['Date', 'Ticker', 'Close']]
+    data.columns = ['date', 'ticker', 'close']
     data_json = data.to_dict('records')
     return data_json

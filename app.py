@@ -87,9 +87,15 @@ async def create_post_stock(
 @app.post("/stockreturn",  status_code=status.HTTP_201_CREATED)
 async def create_post_stock2(
     ticker:str,
-     database: Database = Depends(get_database)
+    time_past:int,
+     database: Database = Depends(get_database),
+
 ) -> List[models.DateTickerDB]:
-    datetickerpost = get_stock_data(ticker)
+
+    delete_query = models.dateticker.delete().where(models.dateticker.columns.ticker == ticker)
+    await database.execute(delete_query)
+
+    datetickerpost = get_stock_data(ticker,time_past)
     insert_query = models.dateticker.insert().values(datetickerpost)
     datetickerid = await database.execute(insert_query)
 
