@@ -84,7 +84,7 @@ async def create_post_stock(
 
     return datetickerdb
 
-@app.post("/stockreturn",  status_code=status.HTTP_201_CREATED)
+@app.post("/stockchart",  status_code=status.HTTP_201_CREATED)
 async def create_post_stock2(
     ticker:str,
     time_past:int,

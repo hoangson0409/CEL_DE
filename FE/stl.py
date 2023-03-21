@@ -20,7 +20,7 @@ ticker = st.radio(
 data = {'ticker':ticker,'time_past' : int(days)}
 
 if st.button("Submit"):
-    response = requests.post('http://127.0.0.1:8000/stockreturn', params=data)
+    response = requests.post('http://127.0.0.1:8000/stockchart', params=data)
     json_response = response.json()
 
     stock_data = pd.DataFrame.from_records(json_response)
